@@ -1,19 +1,26 @@
 package com.kaixuan.windowtree_annotation.model;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class WindowMeta<T> {
+public class WindowInfo<T> {
 
     private Class<?> clazz = null;
     private String clazzName = "";
-    public WindowMeta parent = null;
-    public List<WindowMeta> child = new ArrayList<>();
+    public WindowInfo parent = null;
+    public List<WindowInfo> child = new ArrayList<>();
     public int index;
     private int windowType;
     private T t;
 
-    public WindowMeta(Class<?> clazz, String clazzName, WindowMeta parent) {
+    /**
+     *
+     * @param clazz
+     * @param clazzName
+     * @param parent
+     */
+    public WindowInfo(Class<?> clazz,String clazzName,WindowInfo parent) {
         this.clazz = clazz;
         this.clazzName = clazzName;
         this.parent = parent;
@@ -21,7 +28,7 @@ public class WindowMeta<T> {
 
     public void addChild(String clazzName){
         try {
-            child.add(new WindowMeta(Class.forName(clazzName),clazzName,this));
+            child.add(new WindowInfo(Class.forName(clazzName),clazzName,this));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -31,7 +38,7 @@ public class WindowMeta<T> {
         return clazz;
     }
 
-    public WindowMeta setClazz(Class<?> clazz) {
+    public WindowInfo setClazz(Class<?> clazz) {
         this.clazz = clazz;
         return this;
     }
@@ -40,7 +47,7 @@ public class WindowMeta<T> {
         return clazzName;
     }
 
-    public WindowMeta setClazzName(String clazzName) {
+    public WindowInfo setClazzName(String clazzName) {
         this.clazzName = clazzName;
         return this;
     }
@@ -49,7 +56,7 @@ public class WindowMeta<T> {
         return t;
     }
 
-    public WindowMeta<T> setT(T t) {
+    public WindowInfo<T> setT(T t) {
         this.t = t;
         return this;
     }
@@ -58,14 +65,14 @@ public class WindowMeta<T> {
         return windowType;
     }
 
-    public WindowMeta<T> setWindowType(int windowType) {
+    public WindowInfo<T> setWindowType(int windowType) {
         this.windowType = windowType;
         return this;
     }
 
     @Override
     public String toString() {
-        return "WindowMeta{" +
+        return "WindowInfo{" +
                 "clazz=" + clazz +
                 ", clazzName='" + clazzName + '\'' +
                 ", parent=" + parent +

@@ -2,10 +2,8 @@ package com.kaixuan.windowtree.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import com.kaixuan.windowtree.MainActivity
 import com.kaixuan.windowtree.R
 import com.kaixuan.windowtree_annotation.annotation.Window
-import com.kaixuan.windowtree_annotation.model.WindowMeta
 
 @Window(parentClassName = "com.kaixuan.windowtree.MainActivity",index = 1)
 class Test2Activity : AppCompatActivity() {

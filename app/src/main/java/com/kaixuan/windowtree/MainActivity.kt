@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.kaixuan.windowtree_annotation.annotation.Window
 import com.kaixuan.windowtreelibrary.WindowTree
+import kotlinx.android.synthetic.main.activity_main.*
 
 @Window
 class MainActivity : AppCompatActivity() {
@@ -12,12 +13,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        WindowTree.init(this.application)
+        btnInit.setOnClickListener {
+            WindowTree.init(this.application)
+        }
+        btnDestroy.setOnClickListener {
+            WindowTree.destroy()
+        }
     }
 
     override fun onBackPressed() {
-//        super.onBackPressed()
+        super.onBackPressed()
 
-        WindowTree.init(this.application)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 }
