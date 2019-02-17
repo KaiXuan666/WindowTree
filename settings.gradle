@@ -1,0 +1,1 @@
+include ':app', ':windowtree_library', ':windowtree_compiler', ':windowtree_annotation'
