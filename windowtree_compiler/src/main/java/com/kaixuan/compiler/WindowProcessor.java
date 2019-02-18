@@ -69,7 +69,7 @@ public class WindowProcessor extends AbstractProcessor {
             mMessager.printMessage(Diagnostic.Kind.WARNING, "windowInfos windowInfos : " +windowInfos.toString());
             for (WindowInfo meta : windowInfos) {
                 mMessager.printMessage(Diagnostic.Kind.WARNING, "windowInfos meta.index : " + meta.index);
-                builder.addStatement("currentWindowMeta.addChild($S,$L)", meta.getClazzName(),meta.index);//添加方法内容
+                builder.addStatement("currentWindowMeta.addChild($S,$S,$L)", meta.getClazzName(),meta.name,meta.index);//添加方法内容
             }
             MethodSpec methodSpec = builder.addException(ClassName.get(ClassNotFoundException.class))
                     .build();
@@ -152,7 +152,7 @@ public class WindowProcessor extends AbstractProcessor {
 
                 mMessager.printMessage(Diagnostic.Kind.WARNING, "routeElement : " + routeElement.toString());
 //               routeElement.toString()
-                windowInfos.add(new WindowInfo(null, routeElement.toString(), null,annotation.index()));
+                windowInfos.add(new WindowInfo(null, routeElement.toString(), null,annotation.name(),annotation.index()));
             } else {
                 mMessager.printMessage(Diagnostic.Kind.WARNING, "not class : " + routeElement.toString());
             }

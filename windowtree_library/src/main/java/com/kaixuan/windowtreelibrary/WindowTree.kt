@@ -66,9 +66,8 @@ class WindowTree{
         }
     }
 
-    fun <T : Any> with(clzObj: T): String {
-
-        return clzObj.javaClass.simpleName
+    fun <T : Any> with(obj: T): WindowInfo<Any> {
+        return windowInfo!!.findWindowInfoByClass(obj.javaClass)
     }
 
 

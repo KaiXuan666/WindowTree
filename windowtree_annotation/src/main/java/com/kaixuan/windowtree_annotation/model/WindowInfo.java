@@ -10,6 +10,7 @@ public class WindowInfo<T> {
     private String clazzName = "";
     public WindowInfo parent = null;
     public List<WindowInfo> child = new ArrayList<>();
+    public String name;
     public int index;
     private int windowType;
     private T t;
@@ -23,22 +24,21 @@ public class WindowInfo<T> {
     public WindowInfo(Class<?> clazz,String clazzName,WindowInfo parent) {
         this(clazz,clazzName,parent,0);
     }
-    /**
-     *
-     * @param clazz
-     * @param clazzName
-     * @param parent
-     */
+
     public WindowInfo(Class<?> clazz,String clazzName,WindowInfo parent,int index) {
+        this(clazz,clazzName,parent,"",0);
+    }
+    public WindowInfo(Class<?> clazz,String clazzName,WindowInfo parent,String name,int index) {
         this.index = index;
+        this.name = name;
         this.clazz = clazz;
         this.clazzName = clazzName;
         this.parent = parent;
     }
 
-    public void addChild(String clazzName,int index){
+    public void addChild(String clazzName,String name,int index){
         try {
-            child.add(new WindowInfo(Class.forName(clazzName),clazzName,this,index));
+            child.add(new WindowInfo(Class.forName(clazzName),clazzName,this,name,index));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -80,6 +80,17 @@ public class WindowInfo<T> {
         return this;
     }
 
+    public WindowInfo<T> findWindowInfoByClass(Class clazz){
+        return findWindowInfoByClass(clazz.getName());
+    }
+    public WindowInfo<T> findWindowInfoByClass(String clazzName){
+        if (this.clazzName.equals(clazzName)){return this;}
+        for (WindowInfo windowInfo : child) {
+            return windowInfo.findWindowInfoByClass(windowInfo.clazz);
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return "WindowInfo{" +
@@ -87,6 +98,9 @@ public class WindowInfo<T> {
                 ", clazzName='" + clazzName + '\'' +
                 ", parent=" + parent +
                 ", child=" + child +
+                ", index=" + index +
+                ", windowType=" + windowType +
+                ", t=" + t +
                 '}';
     }
 }
