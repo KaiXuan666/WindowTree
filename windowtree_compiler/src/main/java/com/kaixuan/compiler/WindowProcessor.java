@@ -16,7 +16,7 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 import com.kaixuan.windowtree_annotation.enums.WindowType;
-import com.kaixuan.windowtree_annotation.model.WindowInfo;
+import com.kaixuan.windowtree_annotation.model.WindowMeta;
 import com.kaixuan.windowtree_annotation.annotation.Window;
 import com.squareup.javapoet.*;
 
@@ -58,7 +58,7 @@ public class WindowProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
-        Map<String, List<WindowInfo>> stringListMap = parseWindows(roundEnvironment.getElementsAnnotatedWith(Window.class));
+        Map<String, List<WindowMeta>> stringListMap = parseWindows(roundEnvironment.getElementsAnnotatedWith(Window.class));
         List<String> main = new ArrayList<>();
 
 
@@ -67,17 +67,17 @@ public class WindowProcessor extends AbstractProcessor {
                     .addModifiers(Modifier.PUBLIC)//定义修饰符
                     .addAnnotation(Override.class)
                     .returns(void.class)//定义返回结果
-                    .addParameter(WindowInfo.class, "currentWindowMeta");//添加方法参数
-            List<WindowInfo> windowInfos = stringListMap.get(s);
-            windowInfos.sort(new Comparator<WindowInfo>() {
+                    .addParameter(ClassName.get("com.kaixuan.windowtreelibrary","WindowInfo"), "currentWindowMeta");//添加方法参数
+            List<WindowMeta> windowMetas = stringListMap.get(s);
+            windowMetas.sort(new Comparator<WindowMeta>() {
                 @Override
-                public int compare(WindowInfo windowMeta, WindowInfo t1) {
+                public int compare(WindowMeta windowMeta, WindowMeta t1) {
                     return windowMeta.index - t1.index;
                 }
             });
-            mMessager.printMessage(Diagnostic.Kind.WARNING, "windowInfos windowInfos : " +windowInfos.toString());
-            for (WindowInfo meta : windowInfos) {
-                mMessager.printMessage(Diagnostic.Kind.WARNING, "windowInfos meta.index : " + meta.index);
+            mMessager.printMessage(Diagnostic.Kind.WARNING, "windowMetas windowMetas : " + windowMetas.toString());
+            for (WindowMeta meta : windowMetas) {
+                mMessager.printMessage(Diagnostic.Kind.WARNING, "windowMetas meta.index : " + meta.index);
                 builder.addStatement("currentWindowMeta.addChild($S,$S,$L,$L)", meta.getClazzName(),meta.name,meta.index,meta.getWindowType());//添加方法内容
             }
             MethodSpec methodSpec = builder.addException(ClassName.get(ClassNotFoundException.class))
@@ -138,9 +138,9 @@ public class WindowProcessor extends AbstractProcessor {
         return true;
     }
 
-    private Map<String, List<WindowInfo>> parseWindows(Set<? extends Element> routeElements) {
+    private Map<String, List<WindowMeta>> parseWindows(Set<? extends Element> routeElements) {
         // 以父节点类名为key平铺存储所有WindowMeta
-        Map<String, List<WindowInfo>> map = new HashMap<>();
+        Map<String, List<WindowMeta>> map = new HashMap<>();
 
         TypeMirror type_Activity = mElementUtils.getTypeElement(WindowType.ACTIVITY.getClassName()).asType();
         TypeMirror type_Fragment = mElementUtils.getTypeElement(WindowType.FRAGMENT.getClassName()).asType();
@@ -152,6 +152,8 @@ public class WindowProcessor extends AbstractProcessor {
         for (Element routeElement : routeElements) {
             Window annotation = routeElement.getAnnotation(Window.class);
             if (routeElement.getKind() == ElementKind.CLASS) {
+                mMessager.printMessage(Diagnostic.Kind.WARNING, "annotation : " + annotation.toString());
+                mMessager.printMessage(Diagnostic.Kind.WARNING, "annotation info : " + annotation.name() + annotation.index());
                 String parentName = annotation.parentClassName();
                 if (parentName.isEmpty()) {
                     try {
@@ -161,33 +163,33 @@ public class WindowProcessor extends AbstractProcessor {
 //                       mMessager.printMessage(Diagnostic.Kind.WARNING,"e.getTypeMirror() : " + e.getTypeMirror().toString());
                     }
                 }
-                List<WindowInfo> windowInfos = map.get(parentName);
-                if (windowInfos == null) {
-                    windowInfos = new ArrayList<>();
-                    map.put(parentName, windowInfos);
+                List<WindowMeta> windowMetas = map.get(parentName);
+                if (windowMetas == null) {
+                    windowMetas = new ArrayList<>();
+                    map.put(parentName, windowMetas);
                 }
 
-                mMessager.printMessage(Diagnostic.Kind.WARNING, "routeElement : " + routeElement.toString());
 //               routeElement.toString()
-                WindowInfo windowInfo = new WindowInfo(null, routeElement.toString(), null, annotation.name(), annotation.index());
-                windowInfos.add(windowInfo);
+                WindowMeta windowMeta = new WindowMeta<Object>(null, routeElement.toString(), null, annotation.name(), annotation.index());
+                windowMetas.add(windowMeta);
                 // 判断类型
                 TypeMirror tm = routeElement.asType();
                 if (types.isSubtype(tm,type_Activity)){
-                    windowInfo.setWindowType(WindowType.ACTIVITY);
+                    windowMeta.setWindowType(WindowType.ACTIVITY);
                 }else if (types.isSubtype(tm,type_Fragment)){
-                    windowInfo.setWindowType(WindowType.FRAGMENT);
+                    windowMeta.setWindowType(WindowType.FRAGMENT);
                 }else if (types.isSubtype(tm,type_Fragmentv4)){
-                    windowInfo.setWindowType(WindowType.FRAGMENTV4);
+                    windowMeta.setWindowType(WindowType.FRAGMENTV4);
                 }else if (types.isSubtype(tm,type_View)){
-                    windowInfo.setWindowType(WindowType.VIEW);
+                    windowMeta.setWindowType(WindowType.VIEW);
                 }else if (types.isSubtype(tm,type_Dialog)){
-                    windowInfo.setWindowType(WindowType.DIALOG);
+                    windowMeta.setWindowType(WindowType.DIALOG);
                 }else if (types.isSubtype(tm,type_PopupWindow)){
-                    windowInfo.setWindowType(WindowType.POPUPWINDOW);
+                    windowMeta.setWindowType(WindowType.POPUPWINDOW);
                 }else {
-                    windowInfo.setWindowType(WindowType.UNKNOWN);
+                    windowMeta.setWindowType(WindowType.UNKNOWN);
                 }
+                mMessager.printMessage(Diagnostic.Kind.WARNING, "windowMeta : " + windowMeta.toString());
             } else {
                 mMessager.printMessage(Diagnostic.Kind.WARNING, "not class : " + routeElement.toString());
             }

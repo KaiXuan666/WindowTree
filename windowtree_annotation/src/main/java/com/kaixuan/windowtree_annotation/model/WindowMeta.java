@@ -7,34 +7,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class WindowInfo<T> {
+public class WindowMeta<T> {
 
     private Class<?> clazz = null;
     private String clazzName = "";
-    public WindowInfo parent = null;
-    public List<WindowInfo> child = new ArrayList<>();
+    public WindowMeta parent = null;
+    public List<WindowMeta> child = new ArrayList<>();
     public String name;
     public int index;
     private WindowType windowType;
     private T t;
 
-    /**
-     *
-     * @param clazz
-     * @param clazzName
-     * @param parent
-     */
-    public WindowInfo(Class<?> clazz,String clazzName,WindowInfo parent) {
-        this(clazz,clazzName,parent,0);
+    public WindowMeta(Class<?> clazz, String clazzName, WindowMeta parent, String name, int index) {
+        this(clazz,clazzName,parent,name,index,WindowType.UNKNOWN);
     }
-
-    public WindowInfo(Class<?> clazz,String clazzName,WindowInfo parent,int index) {
-        this(clazz,clazzName,parent,"",0);
-    }
-    public WindowInfo(Class<?> clazz,String clazzName,WindowInfo parent,String name,int index) {
-        this(clazz,clazzName,parent,"",0,WindowType.UNKNOWN);
-    }
-    public WindowInfo(Class<?> clazz,String clazzName,WindowInfo parent,String name,int index,WindowType windowType) {
+    public WindowMeta(Class<?> clazz, String clazzName, WindowMeta parent, String name, int index, WindowType windowType) {
         this.index = index;
         this.name = name;
         this.clazz = clazz;
@@ -45,7 +32,7 @@ public class WindowInfo<T> {
 
     public void addChild(String clazzName,String name,int index,WindowType windowType){
         try {
-            child.add(new WindowInfo(Class.forName(clazzName),clazzName,this,name,index,windowType));
+            child.add(new WindowMeta(Class.forName(clazzName),clazzName,this,name,index,windowType));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -55,7 +42,7 @@ public class WindowInfo<T> {
         return clazz;
     }
 
-    public WindowInfo setClazz(Class<?> clazz) {
+    public WindowMeta setClazz(Class<?> clazz) {
         this.clazz = clazz;
         return this;
     }
@@ -64,7 +51,7 @@ public class WindowInfo<T> {
         return clazzName;
     }
 
-    public WindowInfo setClazzName(String clazzName) {
+    public WindowMeta setClazzName(String clazzName) {
         this.clazzName = clazzName;
         return this;
     }
@@ -73,7 +60,7 @@ public class WindowInfo<T> {
         return t;
     }
 
-    public WindowInfo<T> setT(T t) {
+    public WindowMeta<T> setT(T t) {
         this.t = t;
         return this;
     }
@@ -82,29 +69,27 @@ public class WindowInfo<T> {
         return windowType;
     }
 
-    public WindowInfo<T> setWindowType(WindowType windowType) {
+    public WindowMeta<T> setWindowType(WindowType windowType) {
         this.windowType = windowType;
         return this;
     }
 
-    public WindowInfo<T> findWindowInfoByClass(Class clazz){
+    public WindowMeta<T> findWindowInfoByClass(Class clazz){
         return findWindowInfoByClass(clazz.getName());
     }
-    public WindowInfo<T> findWindowInfoByClass(String clazzName){
+    public WindowMeta<T> findWindowInfoByClass(String clazzName){
         if (this.clazzName.equals(clazzName)){return this;}
-        for (WindowInfo windowInfo : child) {
-            return windowInfo.findWindowInfoByClass(windowInfo.clazz);
+        for (WindowMeta windowMeta : child) {
+            return windowMeta.findWindowInfoByClass(windowMeta.clazz);
         }
         return null;
     }
 
     @Override
     public String toString() {
-        return "WindowInfo{" +
+        return "WindowMeta{" +
                 "clazz=" + clazz +
                 ", clazzName='" + clazzName + '\'' +
-                ", parent=" + parent +
-                ", child=" + child +
                 ", index=" + index +
                 ", windowType=" + windowType +
                 ", t=" + t +

@@ -19,8 +19,7 @@ class MainActivity : AppCompatActivity() {
         }
         btnCreateLayout.setOnClickListener {
 //            showToast(WindowTree.instance.with(this).clazzName)
-            WindowTree.instance.with(this).child.forEach {
-//                ll_tab.addView(TextView(baseContext).apply { text = it.name })
+            WindowTree.instance.with(this)?.child!!.forEach {
                 tabLayout.addTab(tabLayout.newTab().setText(it.name))
             }
         }

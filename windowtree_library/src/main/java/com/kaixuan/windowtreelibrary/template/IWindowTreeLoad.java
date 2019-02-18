@@ -1,6 +1,6 @@
 package com.kaixuan.windowtreelibrary.template;
 
-import com.kaixuan.windowtree_annotation.model.WindowInfo;
+import com.kaixuan.windowtreelibrary.WindowInfo;
 
 public interface IWindowTreeLoad {
 
