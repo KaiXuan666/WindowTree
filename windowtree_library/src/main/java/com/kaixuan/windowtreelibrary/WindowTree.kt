@@ -16,6 +16,8 @@ class WindowTree{
     lateinit var allGeneratedFile :
             Map<String, Class<out IWindowTreeLoad>>;
 
+    var windowInfo : WindowInfo<Any>? = null;
+
     companion object {
         lateinit var mContext : Context
         @JvmField
@@ -35,9 +37,9 @@ class WindowTree{
                         .newInstance()
                 instance.allGeneratedFile = (newInstance as IMain).allGeneratedFile
                 val rootWindow = instance.allGeneratedFile[Consts.GENERATE_FILE_PATH+".Window"+Consts.GENERATE_FILE_NAME_END]
-                val windowInfo = WindowInfo<Any>(null,null,null);
-                rootWindow!!.getConstructor().newInstance().loadWindowTree(windowInfo)
-                bindWindowTree(windowInfo)
+                instance.windowInfo = WindowInfo<Any>(Window::class.java,Window::class.java.name,null);
+                rootWindow!!.getConstructor().newInstance().loadWindowTree(instance.windowInfo)
+                bindWindowTree(instance.windowInfo!!)
                 logger.error(Consts.TAG,instance.allGeneratedFile.toString())
                 logger.error(Consts.TAG,rootWindow.toString())
 //            fileNameByPackageName.find { TextUtils.getRight(it,".") }
@@ -46,22 +48,28 @@ class WindowTree{
 
         fun bindWindowTree(windowInfo: WindowInfo<Any>){
             windowInfo.child.forEach { forItem ->
-                val clazz = instance.allGeneratedFile[Consts.GENERATE_FILE_PATH + "." + TextUtils.getRight(
-                    forItem.clazzName,
-                    "."
-                ) + Consts.GENERATE_FILE_NAME_END]
-                clazz?.let {
-                    it.getConstructor().newInstance().loadWindowTree(forItem)
+                val clazz = instance.allGeneratedFile[Consts.GENERATE_FILE_PATH + "." + forItem.clazz.simpleName + Consts.GENERATE_FILE_NAME_END]
+                if (clazz == null){
+                    // 找不到，停止
+
+                }else{
+                    // 找到，继续递归
+                    clazz.getConstructor().newInstance().loadWindowTree(forItem)
+                    bindWindowTree(forItem)
                 }
-                bindWindowTree(forItem);
             }
         }
 
         fun destroy(){
             hasInit = false
+            instance.windowInfo = null
         }
     }
 
+    fun <T : Any> with(clzObj: T): String {
+
+        return clzObj.javaClass.simpleName
+    }
 
 
 }

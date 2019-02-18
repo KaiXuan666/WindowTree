@@ -16,6 +16,9 @@ class MainActivity : AppCompatActivity() {
         btnInit.setOnClickListener {
             WindowTree.init(this.application)
         }
+        btnCreateLayout.setOnClickListener {
+            WindowTree.instance.with(this)
+        }
         btnDestroy.setOnClickListener {
             WindowTree.destroy()
         }

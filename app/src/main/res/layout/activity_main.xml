@@ -12,12 +12,26 @@
             android:id="@+id/btnInit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
             android:text="初始化WindowTree"/>
+    <Button
+            android:id="@+id/btnCreateLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="WindowTree自动布局"/>
     <Button
             android:id="@+id/btnDestroy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="销毁"/>
+    <View android:layout_width="wrap_content" android:layout_height="0dp"
+          android:layout_weight="1"/>
 
+    <LinearLayout
+            android:id="@+id/ll_tab"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+    </LinearLayout>
 
 </LinearLayout>

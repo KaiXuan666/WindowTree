@@ -21,14 +21,24 @@ public class WindowInfo<T> {
      * @param parent
      */
     public WindowInfo(Class<?> clazz,String clazzName,WindowInfo parent) {
+        this(clazz,clazzName,parent,0);
+    }
+    /**
+     *
+     * @param clazz
+     * @param clazzName
+     * @param parent
+     */
+    public WindowInfo(Class<?> clazz,String clazzName,WindowInfo parent,int index) {
+        this.index = index;
         this.clazz = clazz;
         this.clazzName = clazzName;
         this.parent = parent;
     }
 
-    public void addChild(String clazzName){
+    public void addChild(String clazzName,int index){
         try {
-            child.add(new WindowInfo(Class.forName(clazzName),clazzName,this));
+            child.add(new WindowInfo(Class.forName(clazzName),clazzName,this,index));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
