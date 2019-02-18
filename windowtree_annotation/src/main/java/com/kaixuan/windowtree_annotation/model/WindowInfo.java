@@ -1,8 +1,11 @@
 package com.kaixuan.windowtree_annotation.model;
 
 
+import com.kaixuan.windowtree_annotation.enums.WindowType;
+
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class WindowInfo<T> {
 
@@ -12,7 +15,7 @@ public class WindowInfo<T> {
     public List<WindowInfo> child = new ArrayList<>();
     public String name;
     public int index;
-    private int windowType;
+    private WindowType windowType;
     private T t;
 
     /**
@@ -29,16 +32,20 @@ public class WindowInfo<T> {
         this(clazz,clazzName,parent,"",0);
     }
     public WindowInfo(Class<?> clazz,String clazzName,WindowInfo parent,String name,int index) {
+        this(clazz,clazzName,parent,"",0,WindowType.UNKNOWN);
+    }
+    public WindowInfo(Class<?> clazz,String clazzName,WindowInfo parent,String name,int index,WindowType windowType) {
         this.index = index;
         this.name = name;
         this.clazz = clazz;
         this.clazzName = clazzName;
         this.parent = parent;
+        this.windowType = windowType;
     }
 
-    public void addChild(String clazzName,String name,int index){
+    public void addChild(String clazzName,String name,int index,WindowType windowType){
         try {
-            child.add(new WindowInfo(Class.forName(clazzName),clazzName,this,name,index));
+            child.add(new WindowInfo(Class.forName(clazzName),clazzName,this,name,index,windowType));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -71,11 +78,11 @@ public class WindowInfo<T> {
         return this;
     }
 
-    public int getWindowType() {
+    public WindowType getWindowType() {
         return windowType;
     }
 
-    public WindowInfo<T> setWindowType(int windowType) {
+    public WindowInfo<T> setWindowType(WindowType windowType) {
         this.windowType = windowType;
         return this;
     }

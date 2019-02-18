@@ -4,6 +4,10 @@ public enum  WindowType {
 
     ACTIVITY(0, "android.app.Activity"),
     FRAGMENT(1, "android.app.Fragment"),
+    FRAGMENTV4(2, "android.support.v4.app.Fragment"),
+    VIEW(3, "android.view.View"),
+    DIALOG(4, "android.app.Dialog"),
+    POPUPWINDOW(5, "android.widget.PopupWindow"),
     UNKNOWN(-1, "Unknown route type");
 
     int id;

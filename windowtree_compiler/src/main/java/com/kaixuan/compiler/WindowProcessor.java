@@ -10,9 +10,12 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.MirroredTypeException;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
+import com.kaixuan.windowtree_annotation.enums.WindowType;
 import com.kaixuan.windowtree_annotation.model.WindowInfo;
 import com.kaixuan.windowtree_annotation.annotation.Window;
 import com.squareup.javapoet.*;
@@ -37,12 +40,17 @@ public class WindowProcessor extends AbstractProcessor {
      * 日志相关的辅助类
      */
     private Messager mMessager;
+    /**
+     * 日志相关的辅助类
+     */
+    private Types types;
 
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
         mFiler = processingEnvironment.getFiler();
+        types = processingEnvironment.getTypeUtils();
         mElementUtils = processingEnvironment.getElementUtils();
         mMessager = processingEnvironment.getMessager();
         mMessager.printMessage(Diagnostic.Kind.WARNING, "init : ");
@@ -52,6 +60,7 @@ public class WindowProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         Map<String, List<WindowInfo>> stringListMap = parseWindows(roundEnvironment.getElementsAnnotatedWith(Window.class));
         List<String> main = new ArrayList<>();
+
 
         for (String s : stringListMap.keySet()) {
             MethodSpec.Builder builder = MethodSpec.methodBuilder("loadWindowTree")//定义方面名
@@ -69,7 +78,7 @@ public class WindowProcessor extends AbstractProcessor {
             mMessager.printMessage(Diagnostic.Kind.WARNING, "windowInfos windowInfos : " +windowInfos.toString());
             for (WindowInfo meta : windowInfos) {
                 mMessager.printMessage(Diagnostic.Kind.WARNING, "windowInfos meta.index : " + meta.index);
-                builder.addStatement("currentWindowMeta.addChild($S,$S,$L)", meta.getClazzName(),meta.name,meta.index);//添加方法内容
+                builder.addStatement("currentWindowMeta.addChild($S,$S,$L,$L)", meta.getClazzName(),meta.name,meta.index,meta.getWindowType());//添加方法内容
             }
             MethodSpec methodSpec = builder.addException(ClassName.get(ClassNotFoundException.class))
                     .build();
@@ -82,7 +91,8 @@ public class WindowProcessor extends AbstractProcessor {
                     .build();
             // 创建Java文件
             main.add("com.kaixuan.windowtree.windows." + tempClass );
-            JavaFile javaFile = JavaFile.builder("com.kaixuan.windowtree.windows", finderClass).build();
+            JavaFile javaFile = JavaFile.builder("com.kaixuan.windowtree.windows", finderClass)
+                    .addStaticImport(WindowType.class, "*").build();
             try {
                 javaFile.writeTo(mFiler);
             } catch (IOException e) {
@@ -132,6 +142,13 @@ public class WindowProcessor extends AbstractProcessor {
         // 以父节点类名为key平铺存储所有WindowMeta
         Map<String, List<WindowInfo>> map = new HashMap<>();
 
+        TypeMirror type_Activity = mElementUtils.getTypeElement(WindowType.ACTIVITY.getClassName()).asType();
+        TypeMirror type_Fragment = mElementUtils.getTypeElement(WindowType.FRAGMENT.getClassName()).asType();
+        TypeMirror type_Fragmentv4 = mElementUtils.getTypeElement(WindowType.FRAGMENTV4.getClassName()).asType();
+        TypeMirror type_View = mElementUtils.getTypeElement(WindowType.VIEW.getClassName()).asType();
+        TypeMirror type_Dialog = mElementUtils.getTypeElement(WindowType.DIALOG.getClassName()).asType();
+        TypeMirror type_PopupWindow = mElementUtils.getTypeElement(WindowType.POPUPWINDOW.getClassName()).asType();
+
         for (Element routeElement : routeElements) {
             Window annotation = routeElement.getAnnotation(Window.class);
             if (routeElement.getKind() == ElementKind.CLASS) {
@@ -152,7 +169,25 @@ public class WindowProcessor extends AbstractProcessor {
 
                 mMessager.printMessage(Diagnostic.Kind.WARNING, "routeElement : " + routeElement.toString());
 //               routeElement.toString()
-                windowInfos.add(new WindowInfo(null, routeElement.toString(), null,annotation.name(),annotation.index()));
+                WindowInfo windowInfo = new WindowInfo(null, routeElement.toString(), null, annotation.name(), annotation.index());
+                windowInfos.add(windowInfo);
+                // 判断类型
+                TypeMirror tm = routeElement.asType();
+                if (types.isSubtype(tm,type_Activity)){
+                    windowInfo.setWindowType(WindowType.ACTIVITY);
+                }else if (types.isSubtype(tm,type_Fragment)){
+                    windowInfo.setWindowType(WindowType.FRAGMENT);
+                }else if (types.isSubtype(tm,type_Fragmentv4)){
+                    windowInfo.setWindowType(WindowType.FRAGMENTV4);
+                }else if (types.isSubtype(tm,type_View)){
+                    windowInfo.setWindowType(WindowType.VIEW);
+                }else if (types.isSubtype(tm,type_Dialog)){
+                    windowInfo.setWindowType(WindowType.DIALOG);
+                }else if (types.isSubtype(tm,type_PopupWindow)){
+                    windowInfo.setWindowType(WindowType.POPUPWINDOW);
+                }else {
+                    windowInfo.setWindowType(WindowType.UNKNOWN);
+                }
             } else {
                 mMessager.printMessage(Diagnostic.Kind.WARNING, "not class : " + routeElement.toString());
             }
