@@ -3,16 +3,21 @@ package com.kaixuan.windowtreelibrary
 import android.app.Application
 import android.content.Context
 import com.kaixuan.windowtree_annotation.annotation.Window
-import com.kaixuan.windowtree_annotation.model.WindowMeta
+import com.kaixuan.windowtree_annotation.enums.WindowType
+import com.kaixuan.windowtreelibrary.adapter.DefaultJumpAdapter
+import com.kaixuan.windowtreelibrary.template.IJumpAdapter
 import com.kaixuan.windowtreelibrary.template.IMain
 import com.kaixuan.windowtreelibrary.template.IWindowTreeLoad
 import com.kaixuan.windowtreelibrary.util.Consts
 import com.kaixuan.windowtreelibrary.util.DefaultLogger
+import java.lang.RuntimeException
 
 class WindowTree{
 
     lateinit var allGeneratedFile :
             Map<String, Class<out IWindowTreeLoad>>;
+
+    val defaultJumpAdapter : IJumpAdapter by lazy { DefaultJumpAdapter() }
 
     var windowMeta : WindowInfo<Any>? = null;
 
@@ -68,9 +73,11 @@ class WindowTree{
         }
     }
 
-    fun <T : Any> with(obj: T): WindowInfo<out Any?>? {
+    fun with(obj: Any): WindowInfo<*>? {
         return windowMeta!!.findWindowInfoByClass(obj.javaClass)
     }
 
 
 }
+
+fun Any.myWindowInfo() = WindowTree.instance.with(this)
