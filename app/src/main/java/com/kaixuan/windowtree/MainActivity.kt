@@ -28,14 +28,15 @@ class MainActivity : AppCompatActivity() {
         WindowTree.init(MyApp.instance)
         with = WindowTree.instance.with(this)!!
         tv_log.movementMethod = ScrollingMovementMethod.getInstance();
-        with.onEventListener = { windowInfo: WindowInfo<*>, any: Any? ->
-            when(windowInfo){
-                // 1、判断是自己的孩子发来的消息
+        with.setEventListener { sender, sendData ->
+
+            when(sender){
+            // 1、判断是自己的孩子发来的消息
                 in with.child -> {
-                    when(any){
-                        // 2、判断发来消息的数据类型，你也可以定义msgCode来进行判断，此处我为了偷懒
+                    when(sendData){
+                    // 2、判断发来消息的数据类型，你也可以定义msgCode来进行判断，此处我为了偷懒
                         is String -> {
-                            tv_log.append("子模块${windowInfo.getClazzName()}发来了消息，内容=${any}\n")
+                            tv_log.append("子模块${sender.getClazzName()}发来了消息，内容=${sendData}\n")
                         }
                         is Int -> {
 
@@ -43,7 +44,9 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+            return@setEventListener "ok 我已收到并处理完毕"
         }
+
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
             override fun onTabReselected(p0: TabLayout.Tab?) {
             }

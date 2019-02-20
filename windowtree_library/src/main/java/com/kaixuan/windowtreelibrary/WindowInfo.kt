@@ -35,7 +35,7 @@ class WindowInfo<T> @JvmOverloads constructor (
     var frameLayoutId = -1
     var mJumpAdapter: IJumpAdapter? = null
 
-    var onEventListener : ((
+    private var onEventListener : ((
         sender:WindowInfo<*>,
         sendData:Any?
     ) -> Any? )? = null
@@ -99,6 +99,12 @@ class WindowInfo<T> @JvmOverloads constructor (
         receiver.onEventListener ?: WindowTree.logger.error(TAG,"发送失败，目标${receiver}未设置监听").run { return null }
         return receiver.onEventListener!!.invoke(this, data)
     }
+
+    fun setEventListener(a : (( sender:WindowInfo<*>, sendData:Any?) -> Any? )?){
+        onEventListener = a
+    }
+
+    fun getEventListener() = onEventListener
 
     /**
      * 跳转至第几个子界面
