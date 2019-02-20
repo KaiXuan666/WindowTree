@@ -26,6 +26,11 @@
                 android:gravity="center"
                 android:textSize="26sp"
                 android:text="点我发消息"/>
+        <TextView
+                android:id="@+id/tv_log"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:lines="5"/>
     </LinearLayout>
 
 

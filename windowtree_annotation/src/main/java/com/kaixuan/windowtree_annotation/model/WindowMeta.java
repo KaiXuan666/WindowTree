@@ -16,18 +16,22 @@ public class WindowMeta<T> {
     public String name;
     public int index;
     private WindowType windowType;
-    private T t;
+    public long pageAuthority;
 
     public WindowMeta(Class<?> clazz, String clazzName, WindowMeta parent, String name, int index) {
         this(clazz,clazzName,parent,name,index,WindowType.UNKNOWN);
     }
     public WindowMeta(Class<?> clazz, String clazzName, WindowMeta parent, String name, int index, WindowType windowType) {
+        this(clazz,clazzName,parent,name,index,WindowType.UNKNOWN,-1);
+    }
+    public WindowMeta(Class<?> clazz, String clazzName, WindowMeta parent, String name, int index, WindowType windowType,long pageAuthority) {
         this.index = index;
         this.name = name;
         this.clazz = clazz;
         this.clazzName = clazzName;
         this.parent = parent;
         this.windowType = windowType;
+        this.pageAuthority = pageAuthority;
     }
 
     public void addChild(String clazzName,String name,int index,WindowType windowType){
@@ -56,15 +60,6 @@ public class WindowMeta<T> {
         return this;
     }
 
-    public T getT() {
-        return t;
-    }
-
-    public WindowMeta<T> setT(T t) {
-        this.t = t;
-        return this;
-    }
-
     public WindowType getWindowType() {
         return windowType;
     }
@@ -74,25 +69,15 @@ public class WindowMeta<T> {
         return this;
     }
 
-    public WindowMeta<T> findWindowInfoByClass(Class clazz){
-        return findWindowInfoByClass(clazz.getName());
-    }
-    public WindowMeta<T> findWindowInfoByClass(String clazzName){
-        if (this.clazzName.equals(clazzName)){return this;}
-        for (WindowMeta windowMeta : child) {
-            return windowMeta.findWindowInfoByClass(windowMeta.clazz);
-        }
-        return null;
-    }
-
     @Override
     public String toString() {
         return "WindowMeta{" +
                 "clazz=" + clazz +
                 ", clazzName='" + clazzName + '\'' +
+                ", name='" + name + '\'' +
                 ", index=" + index +
                 ", windowType=" + windowType +
-                ", t=" + t +
+                ", pageAuthority=" + pageAuthority +
                 '}';
     }
 }

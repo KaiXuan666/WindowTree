@@ -5,6 +5,6 @@ import com.kaixuan.windowtreelibrary.WindowInfo
 
 interface IJumpAdapter{
 
-    fun jump(formContext: Context, to: WindowInfo<*>)
+    fun jump(formContext: Context, to: WindowInfo<*>) : Boolean
 
 }

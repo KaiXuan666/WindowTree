@@ -28,17 +28,23 @@ class WindowInfo<T> @JvmOverloads constructor (
     var parent: WindowInfo<*>? = null
     val child: MutableList<WindowInfo<*>> = ArrayList()
     val bundle: Bundle by lazy { Bundle() }
-    private var t: T? = null
+    private var tag : T? = null
     /**
      * 如当前节点需跳转到Fragment或填充View，则需设置该属性
      */
     var frameLayoutId = -1
     var mJumpAdapter: IJumpAdapter? = null
-
+    /**
+     * 当前节点需要接收其他窗口发来的消息时，请设置该监听
+     */
     private var onEventListener : ((
         sender:WindowInfo<*>,
         sendData:Any?
     ) -> Any? )? = null
+
+    var unReadMsgCount : Int = 0
+
+    var pageAuthority : Long = -1
 
     init {
         this.clazz = clazz
@@ -46,9 +52,9 @@ class WindowInfo<T> @JvmOverloads constructor (
         this.parent = parent
     }
 
-    fun addChild(clazzName: String, name: String, index: Int, windowType: WindowType) {
+    fun addChild(clazzName: String, name: String, index: Int, windowType: WindowType,pageAuthority : Long) {
         try {
-            child.add(WindowInfo<Any>(Class.forName(clazzName), clazzName, this, name, index, windowType))
+            child.add(WindowInfo<Any>(Class.forName(clazzName), clazzName, this, name, index, windowType).apply { this.pageAuthority = pageAuthority })
         } catch (e: ClassNotFoundException) {
             WindowTree.logger.error("addChild",e.toString())
             e.printStackTrace()
@@ -74,12 +80,12 @@ class WindowInfo<T> @JvmOverloads constructor (
         return this
     }
 
-    fun getT(): T? {
-        return t
+    fun getTag(): T? {
+        return tag
     }
 
-    fun setT(t: T): WindowInfo<T> {
-        this.t = t
+    fun setTag(tag: T): WindowInfo<T> {
+        this.tag = tag
         return this
     }
 
@@ -109,12 +115,12 @@ class WindowInfo<T> @JvmOverloads constructor (
     /**
      * 跳转至第几个子界面
      */
-    fun jump(context: Context, index : Int,vararg  windowType: WindowType){
+    fun jump(context: Context, index : Int,vararg  windowType: WindowType):Boolean{
         val tempWindowType = if (windowType.isEmpty())WindowType.UNKNOWN else windowType[0]
         val tempAdapter = mJumpAdapter ?: WindowTree.instance.defaultJumpAdapter
         val filter = child.filter { tempWindowType == WindowType.UNKNOWN || it.windowType == tempWindowType }
         if (index >= filter.size) throw RuntimeException("找不到${tempWindowType}类型的第${index}个窗口")
-        tempAdapter.jump(context, filter[index])
+        return tempAdapter.jump(context, filter[index])
     }
 
     fun findWindowInfoByClass(clazz: Class<*>?): WindowInfo<*>? {
@@ -150,7 +156,7 @@ class WindowInfo<T> @JvmOverloads constructor (
                 ", child.size=" + child.size +
                 ", index=" + index +
                 ", windowType=" + windowType +
-                ", t=" + t +
+                ", tag=" + tag +
                 '}'.toString()
     }
 }

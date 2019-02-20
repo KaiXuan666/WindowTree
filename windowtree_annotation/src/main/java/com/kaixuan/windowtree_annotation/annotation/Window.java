@@ -32,4 +32,11 @@ public @interface Window {
      * @return
      */
     int index() default 0;
+
+    /**
+     * 该窗口在你的项目中，页面权限id是多少
+     * 该值默认为-1时，即该页面无权限控制，任何人都允许加载
+     * @return
+     */
+    int pageAuthority() default -1;
 }

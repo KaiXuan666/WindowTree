@@ -19,15 +19,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        tv_log.movementMethod = ScrollingMovementMethod.getInstance();
         btnInit.setOnClickListener {
             init()
         }
+        btnGc.setOnClickListener { System.gc() }
     }
 
     fun init(){
         WindowTree.init(MyApp.instance)
-        with = WindowTree.instance.with(this)!!
-        tv_log.movementMethod = ScrollingMovementMethod.getInstance();
+        with = myWindowInfo()!!
         with.setEventListener { sender, sendData ->
 
             when(sender){
@@ -69,10 +70,12 @@ class MainActivity : AppCompatActivity() {
         btnDestroy.setOnClickListener {
             WindowTree.destroy()
             tabLayout.removeAllTabs()
+            frameLayout.removeAllViews()
+            System.gc()
             tv_log.text = ""
         }
-        myWindowInfo()!!.frameLayoutId = frameLayout.id
-        myWindowInfo()!!.jump(this@MainActivity,0,WindowType.FRAGMENTV4)
+        myWindowInfo().frameLayoutId = frameLayout.id
+        myWindowInfo().jump(this@MainActivity,0,WindowType.FRAGMENTV4)
     }
 
     override fun onBackPressed() {

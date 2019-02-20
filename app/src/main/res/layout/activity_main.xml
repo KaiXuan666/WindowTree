@@ -20,11 +20,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="WindowTree自动布局"/>
-    <Button
-            android:id="@+id/btnDestroy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="销毁"/>
+
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:orientation="horizontal">
+        <Button
+                android:id="@+id/btnDestroy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="销毁"/>
+        <Button
+                android:id="@+id/btnGc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GC"/>
+    </LinearLayout>
 
     <TextView
             android:id="@+id/tv_log"

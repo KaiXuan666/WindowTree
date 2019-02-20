@@ -78,7 +78,7 @@ public class WindowProcessor extends AbstractProcessor {
             mMessager.printMessage(Diagnostic.Kind.WARNING, "windowMetas windowMetas : " + windowMetas.toString());
             for (WindowMeta meta : windowMetas) {
                 mMessager.printMessage(Diagnostic.Kind.WARNING, "windowMetas meta.index : " + meta.index);
-                builder.addStatement("currentWindowMeta.addChild($S,$S,$L,$L)", meta.getClazzName(),meta.name,meta.index,meta.getWindowType());//添加方法内容
+                builder.addStatement("currentWindowMeta.addChild($S,$S,$L,$L,$L)", meta.getClazzName(),meta.name,meta.index,meta.getWindowType(),meta.pageAuthority);//添加方法内容
             }
             MethodSpec methodSpec = builder.addException(ClassName.get(ClassNotFoundException.class))
                     .build();
@@ -170,7 +170,7 @@ public class WindowProcessor extends AbstractProcessor {
                 }
 
 //               routeElement.toString()
-                WindowMeta windowMeta = new WindowMeta<Object>(null, routeElement.toString(), null, annotation.name(), annotation.index());
+                WindowMeta windowMeta = new WindowMeta<Object>(null, routeElement.toString(), null, annotation.name(), annotation.index(),WindowType.UNKNOWN,annotation.pageAuthority());
                 windowMetas.add(windowMeta);
                 // 判断类型
                 TypeMirror tm = routeElement.asType();
