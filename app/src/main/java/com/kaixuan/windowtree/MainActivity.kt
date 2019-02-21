@@ -75,7 +75,6 @@ class MainActivity : AppCompatActivity() {
             tv_log.text = ""
         }
         myWindowInfo().frameLayoutId = frameLayout.id
-        myWindowInfo().jump(this@MainActivity,0,WindowType.FRAGMENTV4)
     }
 
     override fun onBackPressed() {

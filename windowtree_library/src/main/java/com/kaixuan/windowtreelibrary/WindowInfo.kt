@@ -8,6 +8,8 @@ import com.kaixuan.windowtreelibrary.template.IJumpAdapter
 import java.lang.RuntimeException
 
 import java.util.ArrayList
+import kotlin.properties.Delegates
+import kotlin.reflect.KProperty
 
 
 class WindowInfo<T> @JvmOverloads constructor (
@@ -21,7 +23,7 @@ class WindowInfo<T> @JvmOverloads constructor (
 ) {
 
     companion object {
-         val TAG = "WindowInfo"
+         const val TAG = "WindowInfo"
     }
     private var clazz: Class<*>? = null
     private var clazzName = ""

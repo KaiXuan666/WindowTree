@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        tools:context=".activity.TestActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <TextView
+                android:id="@+id/tv_msg_tips"
+                android:layout_width="match_parent" android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="26sp"
+                android:text=""/>
+        <Button
+                android:id="@+id/btn_add_msg"
+                android:layout_width="match_parent" android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="26sp"
+                android:text="本模块消息+1"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
