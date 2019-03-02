@@ -17,7 +17,8 @@ windowTree将应用内的所有界面都视为一个Window，每个window都拥�
 6. 统一管理界面跳转，便于管理界面和埋点统计，减少重复代码
 7. 支持Activity、Fragment、View、Dialog、PopupWindow...
 
-
+<img src="https://img-blog.csdnimg.cn/20190302194910186.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2thaXh1YW5fZGFzaGVu,size_16,color_FFFFFF,t_70" width="400" hegiht="867" align=center />
+  
 # WindowTree使用
 
 
