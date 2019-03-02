@@ -4,6 +4,7 @@ package com.kaixuan.windowtreelibrary
 import android.content.Context
 import android.os.Bundle
 import com.kaixuan.windowtree_annotation.enums.WindowType
+import com.kaixuan.windowtreelibrary.model.UnReadCountEvent
 import com.kaixuan.windowtreelibrary.template.IJumpAdapter
 import com.kaixuan.windowtreelibrary.util.WindowTreeUtil
 import java.lang.RuntimeException
@@ -45,7 +46,18 @@ class WindowInfo<T> @JvmOverloads constructor (
         sendData:Any?
     ) -> Any? )? = null
 
-    var unReadMsgCount : Int = 0
+    /**
+     * 该值发生任意变化时，都会通知到当前窗口以及当前窗口的所有父节点
+     */
+    var unReadMsgCount : Int by Delegates.observable(0) {
+            prop, old, new ->
+        var notifyTaget : WindowInfo<*>?
+        notifyTaget = this
+        while (notifyTaget != null){
+            this.sendData(UnReadCountEvent(this,new - old),notifyTaget)
+            notifyTaget = notifyTaget.parent
+        }
+    }
 
     var pageAuthority : Long = -1
 
@@ -106,6 +118,7 @@ class WindowInfo<T> @JvmOverloads constructor (
 
     fun sendData(data : Any,receiver: WindowInfo<*>) : Any?{
         receiver.onEventListener ?: WindowTree.logger.error(TAG,"发送失败，目标${receiver}未设置监听").run { return null }
+        WindowTree.logger.info("sendData","this = ${this.clazzName}, receiver = ${receiver.clazzName}, data = $data")
         return receiver.onEventListener!!.invoke(this, data)
     }
 
@@ -148,15 +161,32 @@ class WindowInfo<T> @JvmOverloads constructor (
         return findWindowInfoByClass(clazz!!.name)
     }
 
+    /**
+     * 计算当前的所有子节点的未读消息数量（包含当前节点）
+     */
+    fun calcChildUnReadCount() : Int{
+        var count = 0
+        findWindowInfoByCondition {
+            count += it.unReadMsgCount
+            return@findWindowInfoByCondition false
+        }
+        return count
+    }
+
     fun getContext(): Context? = WindowTreeUtil.findContextByInfo(this)
 
-    tailrec fun findWindowInfoByClass(clazzName: String): WindowInfo<*>? {
-        WindowTree.logger.info("findWindowInfoByClass",this.toString())
-        if (this.clazzName == clazzName) {
+    fun findWindowInfoByClass(clazzName: String): WindowInfo<*>? {
+        return findWindowInfoByCondition{
+            return@findWindowInfoByCondition it.clazzName == clazzName
+        }
+    }
+    tailrec fun findWindowInfoByCondition(condition : (WindowInfo<*>) -> Boolean): WindowInfo<*>? {
+        WindowTree.logger.info("findWindowInfoByCondition",this.toString())
+        if (condition(this)) {
             return this
         }
         for (windowMeta in child) {
-            val findWindowInfoByClass = windowMeta.findWindowInfoByClass(clazzName)
+            val findWindowInfoByClass = windowMeta.findWindowInfoByCondition(condition)
             if (findWindowInfoByClass == null){
 
             }else{
@@ -164,6 +194,18 @@ class WindowInfo<T> @JvmOverloads constructor (
             }
         }
         return null
+    }
+    tailrec fun findWindowInfoByConditionUp(condition : (WindowInfo<*>) -> Boolean): WindowInfo<*>? {
+        WindowTree.logger.info("findWindowInfoByCondition",this.toString())
+        if (condition(this)) {
+            return this
+        }
+
+        if (parent == null){
+            return null
+        }else{
+            return parent!!.findWindowInfoByConditionUp(condition)
+        }
     }
 
     /**

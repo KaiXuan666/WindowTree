@@ -24,6 +24,9 @@ class WindowTree{
 
     val defaultJumpAdapter : IJumpAdapter by lazy { DefaultJumpAdapter() }
 
+    /**
+     * 最顶级的WindowInfo
+     */
     var windowMeta : WindowInfo<Any>? = null;
 
     val weakHashMap : WeakHashMap<Any,WindowInfo<*>> = WeakHashMap()

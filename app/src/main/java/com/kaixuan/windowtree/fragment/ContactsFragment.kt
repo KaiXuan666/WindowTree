@@ -23,8 +23,10 @@ class ContactsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         tv_title.text = "我是" + mWindowInfo.getClazz()!!.simpleName
         btn_send.setOnClickListener {
+            mWindowInfo.unReadMsgCount ++
             val response = mWindowInfo.sendData("hello,我是${javaClass.simpleName}", mWindowInfo.parent!!)
             tv_log.append("收到了回信：${mWindowInfo.parent!!.getClazz()!!.simpleName}:$response\n")
         }
+        btn_resetUnReadCount.setOnClickListener { mWindowInfo.unReadMsgCount = 0 }
     }
 }

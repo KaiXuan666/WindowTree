@@ -29,9 +29,11 @@ class MainFragment : Fragment() {
         tv_log.movementMethod = ScrollingMovementMethod.getInstance();
         tv_title.text = "我是" + mWindowInfo!!.getClazz()!!.simpleName
         btn_send.setOnClickListener {
+            mWindowInfo.unReadMsgCount ++
             val response = with.sendData("hello,我是${javaClass.simpleName}", with.parent!!)
             tv_log.append("收到了回信：${with.parent!!.getClazz()!!.simpleName}:${response}\n")
         }
+        btn_resetUnReadCount.setOnClickListener { mWindowInfo.unReadMsgCount = 0 }
 
     }
 

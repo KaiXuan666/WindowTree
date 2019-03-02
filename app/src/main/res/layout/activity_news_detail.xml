@@ -15,28 +15,24 @@
         android:orientation="vertical"
         >
         <TextView
-                android:id="@+id/tv_title"
+                android:id="@+id/tv_unReadCount"
                 android:layout_width="match_parent" android:layout_height="match_parent"
                 android:gravity="center"
                 android:textSize="26sp"
-                android:text="我是"/>
+                android:text=""/>
         <Button
-                android:id="@+id/btn_send"
+                android:id="@+id/btn_unReadAdd"
                 android:layout_width="match_parent" android:layout_height="match_parent"
                 android:gravity="center"
                 android:textSize="26sp"
-                android:text="点我发消息"/>
+                android:text="未读消息+1"/>
         <Button
-                android:id="@+id/btn_resetUnReadCount"
+                android:id="@+id/btn_dealUnRead"
                 android:layout_width="match_parent" android:layout_height="match_parent"
                 android:gravity="center"
                 android:textSize="26sp"
-                android:text="重置消息数量"/>
-        <TextView
-                android:id="@+id/tv_log"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:scrollbars="vertical"
-                android:lines="5"/>
+                android:text="全部已读"/>
+
     </LinearLayout>
 
 

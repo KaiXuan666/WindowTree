@@ -12,6 +12,7 @@ import com.kaixuan.windowtree_annotation.enums.WindowType
 import com.kaixuan.windowtreelibrary.WindowInfo
 import com.kaixuan.windowtreelibrary.WindowTree
 import com.kaixuan.windowtreelibrary.mWindowInfo
+import com.kaixuan.windowtreelibrary.model.UnReadCountEvent
 import kotlinx.android.synthetic.main.activity_main.*
 
 @Window
@@ -55,13 +56,18 @@ class MainActivity : BaseActivity() {
     fun initEventListener(){
         with.setEventListener { sender, sendData ->
 
+            if (sendData is UnReadCountEvent){
+                tv_log.append("未读消息：${sender.name}的未读消息发生变化，数量变化=${sendData.change}\n")
+                updateUnReadCount()
+                return@setEventListener null
+            }
             when(sender){
                 // 1、判断是自己的孩子发来的消息
                 in with.child -> {
                     when(sendData){
                         // 2、判断发来消息的数据类型，你也可以定义msgCode或其他数据类型来进行判断，此处我为了偷懒
                         is String -> {
-                            tv_log.append("子模块${sender.getClazzName()}发来了消息，内容=${sendData}\n")
+                            tv_log.append("子模块${sender.name}发来了消息，内容=${sendData}\n")
                         }
                         is Int -> {
 
@@ -69,6 +75,7 @@ class MainActivity : BaseActivity() {
                     }
                 }
             }
+
             return@setEventListener "ok 我已收到并处理完毕" // 支持返回给消息发送者一个回信
         }
     }
@@ -97,7 +104,7 @@ class MainActivity : BaseActivity() {
 //            }
 //        }
         mWindowInfo.filterChildByWindowType(WindowType.FRAGMENTV4).forEach { window ->
-            tabLayout.addTab(tabLayout.newTab().setText(window.name))
+            tabLayout.addTab(tabLayout.newTab().setText(window.name).setTag(window))
         }
     }
 
@@ -108,6 +115,16 @@ class MainActivity : BaseActivity() {
             llActivity.addView(Button(this).apply { text = "打开 ${window.name}"
             setOnClickListener { with.jump(window) }  // 注：此处不能使用mWindowInfo获取当前windowInfo对象，因为此处的this指代的是View Button
             },ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
+    }
+
+    fun updateUnReadCount(){
+        val calcChildUnReadCount = mWindowInfo.calcChildUnReadCount()
+        supportActionBar!!.title = if (calcChildUnReadCount != 0) "新消息：$calcChildUnReadCount" else "WindowTree"
+        0.rangeTo(tabLayout.tabCount.minus(1)).forEach {
+            val windowInfo = tabLayout.getTabAt(it)!!.tag as WindowInfo<*>
+            val count = windowInfo.calcChildUnReadCount()
+            tabLayout.getTabAt(it)!!.text = windowInfo.name + if (count == 0) "" else "($count)"
         }
     }
 
