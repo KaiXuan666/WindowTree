@@ -17,9 +17,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activity.TestActivity">
+        <activity android:name=".activity.NewsListActivity">
         </activity>
-        <activity android:name=".activity.Test2Activity"/>
+        <activity android:name=".activity.EmptyActivity"/>
     </application>
 
 </manifest>

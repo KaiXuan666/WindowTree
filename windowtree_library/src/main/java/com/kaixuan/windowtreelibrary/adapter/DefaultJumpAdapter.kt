@@ -30,20 +30,23 @@ class DefaultJumpAdapter : IJumpAdapter {
             ?: throw RuntimeException("找不到与该FormContext对应的WindowInfo; WindowInfo corresponding to FormContext could not be found")
         when(to.windowType){
             WindowType.ACTIVITY -> {
-                formContext.startActivity(Intent(formContext,to.getClazz()).apply { putExtras(to.bundle) }).apply { return true }
+                formContext.startActivity(Intent(formContext,to.getClazz()).apply { putExtras(to.bundle) })
+                return true
             }
             WindowType.FRAGMENT -> {
                 (formContext as Activity).fragmentManager.beginTransaction().replace(with.frameLayoutId,
                     getCache(to.getClazzName()) {to.getClazz()!!.newInstance()} as android.app.Fragment
-                ).commit().apply { return true }
+                ).commit()
+                return true
             }
             WindowType.FRAGMENTV4 -> {
                 (formContext as FragmentActivity).supportFragmentManager.beginTransaction().replace(with.frameLayoutId,
                     getCache(to.getClazzName()) {to.getClazz()!!.newInstance()} as Fragment
-                ).commit().apply { return true }
+                ).commit()
+                return true
             }
             else -> {
-                throw RuntimeException("暂时不支持自动跳转至${to.windowType}类型窗口")
+                throw RuntimeException("暂时不支持自动跳转至${to.windowType}类型窗口，您可以自己实现IJumpAdapter接口，自定义跳转方法")
             }
         }
         return false

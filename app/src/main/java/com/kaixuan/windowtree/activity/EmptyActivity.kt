@@ -5,8 +5,8 @@ import android.os.Bundle
 import com.kaixuan.windowtree.R
 import com.kaixuan.windowtree_annotation.annotation.Window
 
-@Window(parentClassName = "com.kaixuan.windowtree.MainActivity",name = "联系人",index = 2)
-class Test2Activity : AppCompatActivity() {
+@Window(parentClassName = "com.kaixuan.windowtree.MainActivity",name = "空白界面",index = 2)
+class EmptyActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

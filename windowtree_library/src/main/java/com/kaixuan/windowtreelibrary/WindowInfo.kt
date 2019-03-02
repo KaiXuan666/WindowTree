@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import com.kaixuan.windowtree_annotation.enums.WindowType
 import com.kaixuan.windowtreelibrary.template.IJumpAdapter
+import com.kaixuan.windowtreelibrary.util.WindowTreeUtil
 import java.lang.RuntimeException
 
 import java.util.ArrayList
@@ -113,19 +114,39 @@ class WindowInfo<T> @JvmOverloads constructor (
     fun getEventListener() = onEventListener
 
     /**
-     * 跳转至第几个子界面
+     * 跳转至第几个什么类型的子界面
+     * @param index 第几个子界面，该索引值受windowType影响
+     * @param windowType 什么类型的子界面，如不传入windowType，默认以所有类型的子界面获取index
      */
-    fun jump(context: Context, index : Int,vararg  windowType: WindowType):Boolean{
-        val tempWindowType = if (windowType.isEmpty())WindowType.UNKNOWN else windowType[0]
+    fun jump(index : Int,windowType: WindowType = WindowType.UNKNOWN):Boolean{
         val tempAdapter = mJumpAdapter ?: WindowTree.instance.defaultJumpAdapter
-        val filter = child.filter { tempWindowType == WindowType.UNKNOWN || it.windowType == tempWindowType }
-        if (index >= filter.size) throw RuntimeException("找不到${tempWindowType}类型的第${index}个窗口")
-        return tempAdapter.jump(context, filter[index])
+        val taget = findChildByIndex<Any>(index, windowType) ?: throw RuntimeException("找不到${windowType}类型的第${index}个窗口")
+        val context = WindowTreeUtil.findContextByInfo(this)
+            ?: throw RuntimeException("当前${this}对应的window未处于打开状态，无法从当前节点获取context，无法跳转")
+        return tempAdapter.jump(context, taget)
+    }
+
+    fun jump(windowInfo: WindowInfo<*>):Boolean{
+        val tempAdapter = mJumpAdapter ?: WindowTree.instance.defaultJumpAdapter
+        val context = WindowTreeUtil.findContextByInfo(this)
+            ?: throw RuntimeException("当前${this}对应的window未处于打开状态，无法从当前节点获取context，无法跳转")
+        return tempAdapter.jump(context, windowInfo)
+    }
+
+    fun <T> findChildByIndex(index : Int,windowType: WindowType = WindowType.UNKNOWN): WindowInfo<T>? {
+        val filter = filterChildByWindowType(windowType)
+        return if (index >= filter.size) null else filter[index] as WindowInfo<T>
+    }
+
+    fun filterChildByWindowType(windowType: WindowType): List<WindowInfo<*>> {
+        return child.filter { windowType == WindowType.UNKNOWN || it.windowType == windowType }
     }
 
     fun findWindowInfoByClass(clazz: Class<*>?): WindowInfo<*>? {
         return findWindowInfoByClass(clazz!!.name)
     }
+
+    fun getContext(): Context? = WindowTreeUtil.findContextByInfo(this)
 
     tailrec fun findWindowInfoByClass(clazzName: String): WindowInfo<*>? {
         WindowTree.logger.info("findWindowInfoByClass",this.toString())

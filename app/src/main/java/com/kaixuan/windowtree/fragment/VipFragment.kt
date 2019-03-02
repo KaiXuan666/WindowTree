@@ -24,8 +24,8 @@ class VipFragment : Fragment() {
         tv_log.movementMethod = ScrollingMovementMethod.getInstance();
         tv_title.text = "我是Vip界面，一般人没有权限打开我"
         btn_send.setOnClickListener {
-            val response = myWindowInfo()!!.sendData("hello,我是${javaClass.simpleName},pageAuthority=${myWindowInfo().pageAuthority}", myWindowInfo()!!.parent!!)
-            tv_log.append( "收到了回信：${myWindowInfo()!!.parent!!.getClazz()!!.simpleName}:$response")
+            val response = myWindowInfo().sendData("hello,我是${javaClass.simpleName},pageAuthority=${myWindowInfo().pageAuthority}", myWindowInfo().parent!!)
+            tv_log.append( "收到了回信：${myWindowInfo().parent!!.getClazz()!!.simpleName}:$response\n")
         }
     }
 }

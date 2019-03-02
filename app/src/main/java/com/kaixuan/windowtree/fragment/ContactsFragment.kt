@@ -21,10 +21,10 @@ class ContactsFragment : Fragment() {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        tv_title.text = "我是" + myWindowInfo()!!.getClazz()!!.simpleName
+        tv_title.text = "我是" + myWindowInfo().getClazz()!!.simpleName
         btn_send.setOnClickListener {
-            val response = myWindowInfo()!!.sendData("hello,我是${javaClass.simpleName}", myWindowInfo()!!.parent!!)
-            tv_log.append("收到了回信：${myWindowInfo()!!.parent!!.getClazz()!!.simpleName}:$response\n")
+            val response = myWindowInfo().sendData("hello,我是${javaClass.simpleName}", myWindowInfo().parent!!)
+            tv_log.append("收到了回信：${myWindowInfo().parent!!.getClazz()!!.simpleName}:$response\n")
         }
     }
 }

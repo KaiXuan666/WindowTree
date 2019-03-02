@@ -5,8 +5,8 @@ import android.os.Bundle
 import com.kaixuan.windowtree.R
 import com.kaixuan.windowtree_annotation.annotation.Window
 
-@Window(parentClassName = "com.kaixuan.windowtree.MainActivity",name = "动态",index = 3)
-class Test3Activity : AppCompatActivity() {
+@Window(parentClassName = "com.kaixuan.windowtree.MainActivity",name = "新闻详情",index = 3)
+class NewsDetailActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
