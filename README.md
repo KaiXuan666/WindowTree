@@ -1,5 +1,5 @@
 # WindowTree
-- 只需使用注解，帮助你轻松维护树形界面的层级关系，管理你的界面结构，当你处于界面的任何位置时，都可以知道，我在哪里，我的父界面是谁，我的子界面是谁。甚至能够自动构建你的界面结构。
+只需使用注解，帮助你轻松维护树形界面的层级关系，管理你的界面结构，当你处于界面的任何位置时，都可以知道，我在哪里，我的父界面是谁，我的子界面是谁。甚至能够自动构建你的界面结构。
 
 
 # WindowTree结构
@@ -108,6 +108,6 @@ DefaultJumpAdapter中默认实现了一些跳转逻辑，你可以继承它实�
 
 如果你有更好的建议欢迎与我联系！thank you！kaixuanapp@163.com
 
-github：https://github.com/KaiXuan666
+github：https://github.com/KaiXuan666/WindowTree
 csdn：https://blog.csdn.net/kaixuan_dashen
 
