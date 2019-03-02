@@ -83,27 +83,17 @@ class WindowTree{
     }
 }
 
-fun Activity.myWindowInfo() : WindowInfo<Any>{
-    val with = WindowTree.instance.with<Any>(this)
-    return with ?: throw RuntimeException("找不到与${this}对应的WindowInfo，请检查。在匿名内部类调用本方法时应谨慎检查this关键字的指代对象。")
-}
-fun View.myWindowInfo() : WindowInfo<Any>{
-    val with = WindowTree.instance.with<Any>(this)
-    return with ?: throw RuntimeException("找不到与${this}对应的WindowInfo，请检查。在匿名内部类调用本方法时应谨慎检查this关键字的指代对象。")
-}
-fun Fragment.myWindowInfo() : WindowInfo<Any>{
-    val with = WindowTree.instance.with<Any>(this)
-    return with ?: throw RuntimeException("找不到与${this}对应的WindowInfo，请检查。在匿名内部类调用本方法时应谨慎检查this关键字的指代对象。")
-}
-fun android.app.Fragment.myWindowInfo() : WindowInfo<Any>{
-    val with = WindowTree.instance.with<Any>(this)
-    return with ?: throw RuntimeException("找不到与${this}对应的WindowInfo，请检查。在匿名内部类调用本方法时应谨慎检查this关键字的指代对象。")
-}
-fun Dialog.myWindowInfo() : WindowInfo<Any>{
-    val with = WindowTree.instance.with<Any>(this)
-    return with ?: throw RuntimeException("找不到与${this}对应的WindowInfo，请检查。在匿名内部类调用本方法时应谨慎检查this关键字的指代对象。")
-}
-fun PopupWindow.myWindowInfo() : WindowInfo<Any>{
-    val with = WindowTree.instance.with<Any>(this)
-    return with ?: throw RuntimeException("找不到与${this}对应的WindowInfo，请检查。在匿名内部类调用本方法时应谨慎检查this关键字的指代对象。")
-}
+fun getWindowInfo(any: Any) :WindowInfo<Any> = WindowTree.instance.with<Any>(any) ?: throw RuntimeException("找不到与${any}对应的WindowInfo，请检查。在匿名内部类调用本方法时应谨慎检查this关键字的指代对象。")
+
+val Activity.mWindowInfo: WindowInfo<Any>
+    get() = getWindowInfo(this)
+val View.mWindowInfo: WindowInfo<Any>
+    get() = getWindowInfo(this)
+val Fragment.mWindowInfo: WindowInfo<Any>
+    get() = getWindowInfo(this)
+val android.app.Fragment.mWindowInfo: WindowInfo<Any>
+    get() = getWindowInfo(this)
+val Dialog.mWindowInfo: WindowInfo<Any>
+    get() = getWindowInfo(this)
+val PopupWindow.mWindowInfo: WindowInfo<Any>
+    get() = getWindowInfo(this)

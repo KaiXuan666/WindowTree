@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.kaixuan.windowtree.R
-import com.kaixuan.windowtreelibrary.myWindowInfo
+import com.kaixuan.windowtreelibrary.mWindowInfo
 import kotlinx.android.synthetic.main.fragment_msg.*
 
 class GoodFriendDynamicFragment : Fragment() {
@@ -17,14 +17,14 @@ class GoodFriendDynamicFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         updateMsgCount()
-        myWindowInfo().setEventListener { sender, sendData ->
-            myWindowInfo().unReadMsgCount++
+        mWindowInfo.setEventListener { sender, sendData ->
+            mWindowInfo.unReadMsgCount++
             updateMsgCount()
         }
     }
 
     fun updateMsgCount(){
-        tv_msg_tips.text = "我有${myWindowInfo().unReadMsgCount}条未读消息"
+        tv_msg_tips.text = "我有${mWindowInfo.unReadMsgCount}条未读消息"
     }
 
 }

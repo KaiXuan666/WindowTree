@@ -20,6 +20,7 @@
         <activity android:name=".activity.NewsListActivity">
         </activity>
         <activity android:name=".activity.EmptyActivity"/>
+        <activity android:name=".activity.NewsDetailActivity"/>
     </application>
 
 </manifest>

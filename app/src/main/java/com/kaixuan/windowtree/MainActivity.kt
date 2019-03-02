@@ -6,14 +6,12 @@ import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
 import com.kaixuan.windowtree.activity.BaseActivity
 import com.kaixuan.windowtree_annotation.annotation.Window
 import com.kaixuan.windowtree_annotation.enums.WindowType
 import com.kaixuan.windowtreelibrary.WindowInfo
 import com.kaixuan.windowtreelibrary.WindowTree
-import com.kaixuan.windowtreelibrary.myWindowInfo
+import com.kaixuan.windowtreelibrary.mWindowInfo
 import kotlinx.android.synthetic.main.activity_main.*
 
 @Window
@@ -48,8 +46,8 @@ class MainActivity : BaseActivity() {
             return
         }
         WindowTree.init(MyApp.instance)
-        with = myWindowInfo()
-        myWindowInfo().frameLayoutId = frameLayout.id
+        with = mWindowInfo
+        mWindowInfo.frameLayoutId = frameLayout.id
         initEventListener()
 
     }
@@ -88,7 +86,7 @@ class MainActivity : BaseActivity() {
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                myWindowInfo().jump(tab!!.position,WindowType.FRAGMENTV4)
+                mWindowInfo.jump(tab!!.position,WindowType.FRAGMENTV4)
             }
         })
 
@@ -98,7 +96,7 @@ class MainActivity : BaseActivity() {
 //                tabLayout.addTab(tabLayout.newTab().setText(it.name))
 //            }
 //        }
-        myWindowInfo().filterChildByWindowType(WindowType.FRAGMENTV4).forEach { window ->
+        mWindowInfo.filterChildByWindowType(WindowType.FRAGMENTV4).forEach { window ->
             tabLayout.addTab(tabLayout.newTab().setText(window.name))
         }
     }
@@ -106,9 +104,9 @@ class MainActivity : BaseActivity() {
     fun initActivityButton(){
         llActivity.visibility = View.VISIBLE
         // 过滤子Window自动进行布局
-        myWindowInfo().filterChildByWindowType(WindowType.ACTIVITY).forEach {window ->
-            llActivity.addView(Button(this).apply { text = "打开 $window.name"
-            setOnClickListener { with.jump(window) }  // 注：此处不能使用myWindowInfo()获取当前windowInfo对象，因为此处的this指代的是View Button
+        mWindowInfo.filterChildByWindowType(WindowType.ACTIVITY).forEach {window ->
+            llActivity.addView(Button(this).apply { text = "打开 ${window.name}"
+            setOnClickListener { with.jump(window) }  // 注：此处不能使用mWindowInfo获取当前windowInfo对象，因为此处的this指代的是View Button
             },ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
         }
     }
