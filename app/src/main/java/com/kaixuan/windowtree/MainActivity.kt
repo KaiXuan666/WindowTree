@@ -68,7 +68,6 @@ class MainActivity : BaseActivity() {
                         // 2、判断发来消息的数据类型，你也可以定义msgCode或其他数据类型来进行判断，此处我为了偷懒
                         is String -> {
                             tv_log.append("子模块${sender.name}发来了消息，内容=${sendData}\n")
-                            tv_log.scrollBy(0,-30)
                         }
                         is Int -> {
 

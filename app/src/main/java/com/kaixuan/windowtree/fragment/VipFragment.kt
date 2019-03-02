@@ -27,7 +27,6 @@ class VipFragment : Fragment() {
             mWindowInfo.unReadMsgCount ++
             val response = mWindowInfo.sendData("hello,我是${javaClass.simpleName},pageAuthority=${mWindowInfo.pageAuthority}", mWindowInfo.parent!!)
             tv_log.append( "收到了回信：${mWindowInfo.parent!!.getClazz()!!.simpleName}:$response\n")
-            tv_log.scrollBy(0,-30)
         }
         btn_resetUnReadCount.setOnClickListener { mWindowInfo.unReadMsgCount = 0 }
     }
