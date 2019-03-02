@@ -12,7 +12,7 @@ import com.kaixuan.windowtree_annotation.annotation.Window
 import com.kaixuan.windowtreelibrary.myWindowInfo
 import kotlinx.android.synthetic.main.fragment_test.*
 
-@Window(parentClass = MainActivity::class,index = 2,name = "动态")
+@Window(parentClass = MainActivity::class,index = 3,name = "动态")
 class DynamicFragment : Fragment() {
 
     var mView : View? = null

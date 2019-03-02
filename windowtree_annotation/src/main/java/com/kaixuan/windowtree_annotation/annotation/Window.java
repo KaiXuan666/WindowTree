@@ -1,5 +1,7 @@
 package com.kaixuan.windowtree_annotation.annotation;
 
+import com.kaixuan.windowtree_annotation.model.WindowData;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

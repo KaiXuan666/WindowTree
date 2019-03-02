@@ -11,7 +11,7 @@ import com.kaixuan.windowtree_annotation.annotation.Window
 import com.kaixuan.windowtreelibrary.myWindowInfo
 import kotlinx.android.synthetic.main.fragment_test.*
 
-@Window(parentClass = MainActivity::class,index = 3,name = "联系人")
+@Window(parentClass = MainActivity::class,index = 2,name = "联系人")
 class ContactsFragment : Fragment() {
 
     var mView : View? = null
