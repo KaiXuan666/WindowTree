@@ -209,6 +209,16 @@ class WindowInfo<T> @JvmOverloads constructor (
     }
 
     /**
+     * 如果当前节点有设置过onEventListener则需要手动调用该方法释放资源
+     *
+     *  @param clearReadCount 是否清理未读消息数量，可根据业务需求传参
+     */
+    fun release(clearReadCount : Boolean = false){
+        if (clearReadCount) unReadMsgCount = 0
+        setEventListener(null)
+    }
+
+    /**
      * 切忌不要打印this或父或子节点，否则将造成
      */
     override fun toString(): String {

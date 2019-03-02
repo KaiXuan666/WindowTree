@@ -32,6 +32,7 @@ class MainFragment : Fragment() {
             mWindowInfo.unReadMsgCount ++
             val response = with.sendData("hello,我是${javaClass.simpleName}", with.parent!!)
             tv_log.append("收到了回信：${with.parent!!.getClazz()!!.simpleName}:${response}\n")
+            tv_log.scrollBy(0,-30)
         }
         btn_resetUnReadCount.setOnClickListener { mWindowInfo.unReadMsgCount = 0 }
 

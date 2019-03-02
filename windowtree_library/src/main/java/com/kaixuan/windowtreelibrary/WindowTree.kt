@@ -76,8 +76,14 @@ class WindowTree{
         }
 
         fun destroy(){
-            hasInit = false
-            instance.windowMeta = null
+            if (hasInit){
+                instance.windowMeta!!.findWindowInfoByCondition {
+                    it.release(true)
+                    return@findWindowInfoByCondition false
+                }
+                hasInit = false
+                instance.windowMeta = null
+            }
         }
     }
 

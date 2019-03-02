@@ -59,6 +59,9 @@
             android:scrollbars="vertical"
             android:lines="10"/>
 
+    <View android:layout_width="match_parent" android:layout_height="2px"
+          android:background="@color/design_default_color_primary"
+    />
     <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent" android:layout_height="0dp"

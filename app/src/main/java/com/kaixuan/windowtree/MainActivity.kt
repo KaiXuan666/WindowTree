@@ -68,6 +68,7 @@ class MainActivity : BaseActivity() {
                         // 2、判断发来消息的数据类型，你也可以定义msgCode或其他数据类型来进行判断，此处我为了偷懒
                         is String -> {
                             tv_log.append("子模块${sender.name}发来了消息，内容=${sendData}\n")
+                            tv_log.scrollBy(0,-30)
                         }
                         is Int -> {
 
@@ -110,22 +111,38 @@ class MainActivity : BaseActivity() {
 
     fun initActivityButton(){
         llActivity.visibility = View.VISIBLE
-        // 过滤子Window自动进行布局
-        mWindowInfo.filterChildByWindowType(WindowType.ACTIVITY).forEach {window ->
-            llActivity.addView(Button(this).apply { text = "打开 ${window.name}"
-            setOnClickListener { with.jump(window) }  // 注：此处不能使用mWindowInfo获取当前windowInfo对象，因为此处的this指代的是View Button
-            },ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
+        if (llActivity.childCount == 0){
+            // 过滤子Window自动进行布局
+            mWindowInfo.filterChildByWindowType(WindowType.ACTIVITY).forEach {window ->
+                llActivity.addView(Button(this).apply { text = "打开 ${window.name}"
+                    setOnClickListener { with.jump(window) }  // 注：此处不能使用mWindowInfo获取当前windowInfo对象，因为此处的this指代的是View Button
+                },ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
+            }
         }
     }
 
+    /**
+     * 更新未读消息显示
+     */
     fun updateUnReadCount(){
         val calcChildUnReadCount = mWindowInfo.calcChildUnReadCount()
         supportActionBar!!.title = if (calcChildUnReadCount != 0) "新消息：$calcChildUnReadCount" else "WindowTree"
-        0.rangeTo(tabLayout.tabCount.minus(1)).forEach {
+        (0 until tabLayout.tabCount).forEach {
             val windowInfo = tabLayout.getTabAt(it)!!.tag as WindowInfo<*>
             val count = windowInfo.calcChildUnReadCount()
             tabLayout.getTabAt(it)!!.text = windowInfo.name + if (count == 0) "" else "($count)"
         }
+        (0 until llActivity.childCount).forEach {
+            val findChildByIndex = mWindowInfo.findChildByIndex<Any>(it, WindowType.ACTIVITY)!!
+            (llActivity.getChildAt(it) as Button).apply {
+                text = "打开 ${findChildByIndex.name}"
+                val count = findChildByIndex.calcChildUnReadCount()
+                if (count != 0){
+                    append("($count)")
+                }
+            }
+        }
+
     }
 
     override fun onBackPressed() {
@@ -135,6 +152,7 @@ class MainActivity : BaseActivity() {
     fun release(){
         WindowTree.destroy()
         llActivity.visibility = View.GONE
+        llActivity.removeAllViews()
         tabLayout.removeAllTabs()
         frameLayout.removeAllViews()
         System.gc()
