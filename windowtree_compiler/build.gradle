@@ -1,5 +1,12 @@
 apply plugin: 'java-library'
 apply plugin:'java'
+ext {
+    bintrayName = 'windowtree-compiler'
+    artifact = bintrayName
+    libraryName = 'WindowTree compiler'
+    libraryDescription = 'windowtree-compiler'
+    libraryVersion = arouter_compiler_version
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.google.auto.service:auto-service:1.0-rc3'
@@ -9,6 +16,8 @@ dependencies {
 
 sourceCompatibility = "7"
 targetCompatibility = "7"
-tasks.withType(JavaCompile){
+tasks.withType(Javadoc) {
     options.encoding = "UTF-8"
 }
+apply from: '../install.gradle'
+apply from: '../bintray.gradle'

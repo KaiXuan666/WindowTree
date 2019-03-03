@@ -1,6 +1,13 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+ext {
+    bintrayName = 'windowtree-library'
+    artifact = bintrayName
+    libraryName = 'WindowTree library'
+    libraryDescription = 'windowtree-library'
+    libraryVersion = arouter_library_version
+}
 android {
     compileSdkVersion 28
 
@@ -37,3 +44,8 @@ dependencies {
 repositories {
     mavenCentral()
 }
+tasks.withType(Javadoc) {
+    options.encoding = "UTF-8"
+}
+apply from: '../install.gradle'
+apply from: '../bintray.gradle'

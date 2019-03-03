@@ -1,8 +1,20 @@
 apply plugin: 'java-library'
 
+ext {
+    bintrayName = 'windowtree-annotation'
+    artifact = bintrayName
+    libraryName = 'WindowTree annotation'
+    libraryDescription = 'windowtree-annotation'
+    libraryVersion = arouter_annotation_version
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 sourceCompatibility = "7"
 targetCompatibility = "7"
+tasks.withType(Javadoc) {
+    options.encoding = "UTF-8"
+}
+apply from: '../install.gradle'
+apply from: '../bintray.gradle'
