@@ -3,6 +3,7 @@ package com.kaixuan.windowtree
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -93,6 +94,7 @@ class MainActivity : BaseActivity() {
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                Log.e("onTabSelected",tab!!.tag.toString())
                 mWindowInfo.jump(tab!!.position,WindowType.FRAGMENTV4)
             }
         })
@@ -149,10 +151,12 @@ class MainActivity : BaseActivity() {
     }
 
     fun release(){
+        supportActionBar!!.title = "WindowTree"
         WindowTree.destroy()
         llActivity.visibility = View.GONE
         llActivity.removeAllViews()
         tabLayout.removeAllTabs()
+        tabLayout.clearOnTabSelectedListeners()
         frameLayout.removeAllViews()
         System.gc()
         tv_log.text = ""

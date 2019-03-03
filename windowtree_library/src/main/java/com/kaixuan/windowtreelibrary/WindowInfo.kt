@@ -51,6 +51,7 @@ class WindowInfo<T> @JvmOverloads constructor (
      */
     var unReadMsgCount : Int by Delegates.observable(0) {
             prop, old, new ->
+        if (!WindowTree.hasInit) return@observable  // WindowTree销毁时不再发送未读消息事件
         var notifyTaget : WindowInfo<*>?
         notifyTaget = this
         while (notifyTaget != null){
@@ -117,7 +118,7 @@ class WindowInfo<T> @JvmOverloads constructor (
     }
 
     fun sendData(data : Any,receiver: WindowInfo<*>) : Any?{
-        receiver.onEventListener ?: WindowTree.logger.error(TAG,"发送失败，目标${receiver}未设置监听").run { return null }
+        receiver.onEventListener ?: WindowTree.logger.info(TAG,"发送失败，目标${receiver}未设置监听").run { return null }
         WindowTree.logger.info("sendData","this = ${this.clazzName}, receiver = ${receiver.clazzName}, data = $data")
         return receiver.onEventListener!!.invoke(this, data)
     }

@@ -21,6 +21,7 @@ class ContactsFragment : Fragment() {
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         tv_title.text = "我是" + mWindowInfo.getClazz()!!.simpleName
         btn_send.setOnClickListener {
             mWindowInfo.unReadMsgCount ++
@@ -29,4 +30,10 @@ class ContactsFragment : Fragment() {
         }
         btn_resetUnReadCount.setOnClickListener { mWindowInfo.unReadMsgCount = 0 }
     }
+
+    override fun onDestroyView() {
+        mWindowInfo.release()
+        super.onDestroyView()
+    }
+
 }

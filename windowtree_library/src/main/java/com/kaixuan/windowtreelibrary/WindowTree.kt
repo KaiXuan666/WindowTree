@@ -77,11 +77,12 @@ class WindowTree{
 
         fun destroy(){
             if (hasInit){
+                hasInit = false
                 instance.windowMeta!!.findWindowInfoByCondition {
                     it.release(true)
                     return@findWindowInfoByCondition false
                 }
-                hasInit = false
+                instance.weakHashMap.clear()
                 instance.windowMeta = null
             }
         }
