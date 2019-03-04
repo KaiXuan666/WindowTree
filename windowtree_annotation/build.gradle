@@ -1,12 +1,5 @@
 apply plugin: 'java-library'
-
-ext {
-    bintrayName = 'windowtree-annotation'
-    artifact = bintrayName
-    libraryName = 'WindowTree annotation'
-    libraryDescription = 'windowtree-annotation'
-    libraryVersion = arouter_annotation_version
-}
+apply plugin: 'com.novoda.bintray-release'
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
@@ -16,5 +9,15 @@ targetCompatibility = "7"
 tasks.withType(Javadoc) {
     options.encoding = "UTF-8"
 }
-apply from: '../install.gradle'
-apply from: '../bintray.gradle'
+//添加
+publish {
+    repoName = rootProject.repoName
+    artifactId = 'windowtree-annotation'
+    userOrg = rootProject.userOrg
+    groupId = rootProject.groupId
+    uploadName = rootProject.uploadName
+    publishVersion = rootProject.publishVersion
+    desc = rootProject.desc
+    website = rootProject.website
+    licences = rootProject.licences
+}
