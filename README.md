@@ -21,6 +21,18 @@ windowTree将应用内的所有界面都视为一个Window，每个window都拥�
   
 # WindowTree使用
 
+添加依赖项：
+
+```
+apply plugin: 'kotlin-kapt'
+
+...
+dependencies {
+    kapt 'com.kaixuan:windowtree-compiler:1.0.0'
+    implementation 'com.kaixuan:windowtree-library:1.0.0'
+    ...
+}
+```
 
 1. 在你应用的所有界面添加注解@Window，参数parentClass指定该界面的父节点（如当前是顶级节点，则不需要设置该属性），可选添加其他属性，index表示当前界面是父界面的第几个同类界面，name表示当前节点名字  
 
