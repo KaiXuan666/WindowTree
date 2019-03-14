@@ -40,5 +40,5 @@ public @interface Window {
      * 该值默认为-1时，即该页面无权限控制，任何人都允许加载
      * @return
      */
-    int pageAuthority() default -1;
+    long pageAuthority() default -1;
 }

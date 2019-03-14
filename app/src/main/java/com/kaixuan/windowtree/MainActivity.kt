@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 @Window
 class MainActivity : BaseActivity() {
 
-    lateinit var with : WindowInfo<*>
+    lateinit var with: WindowInfo<*>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -28,13 +28,26 @@ class MainActivity : BaseActivity() {
         btnInit.setOnClickListener {
             init()
         }
-        btnCreateLayout.setOnClickListener {
-            if (WindowTree.hasInit){
+        btnCreateLayout.setOnClickListener { _ ->
+            WindowTree.instance.hasPageAuthorityFun = { it == -1L }
+            if (WindowTree.hasInit) {
                 bindTabLayout()
                 initActivityButton()
-            }else{
+            } else {
                 showToast("请先初始化")
             }
+        }
+        btnCreateLayout.setOnLongClickListener { _ ->
+            // 用户的页面权限，一般通过登录接口获取
+            val userAuthority = listOf(-1L, 1L, 2L, 3L, 4L)
+            WindowTree.instance.hasPageAuthorityFun = { userAuthority.contains(it) }
+            if (WindowTree.hasInit) {
+                bindTabLayout()
+                initActivityButton()
+            } else {
+                showToast("请先初始化")
+            }
+            true
         }
         btnGc.setOnClickListener { System.gc() }
         btnDestroy.setOnClickListener {
@@ -42,8 +55,8 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    fun init(){
-        if (WindowTree.hasInit){
+    fun init() {
+        if (WindowTree.hasInit) {
             showToast("已经初始化过")
             return
         }
@@ -54,18 +67,18 @@ class MainActivity : BaseActivity() {
 
     }
 
-    fun initEventListener(){
+    fun initEventListener() {
         with.setEventListener { sender, sendData ->
 
-            if (sendData is UnReadCountEvent){
+            if (sendData is UnReadCountEvent) {
                 tv_log.append("未读消息：${sender.name}的未读消息发生变化，数量变化=${sendData.change}\n")
                 updateUnReadCount()
                 return@setEventListener null
             }
-            when(sender){
+            when (sender) {
                 // 1、判断是自己的孩子发来的消息
                 in with.child -> {
-                    when(sendData){
+                    when (sendData) {
                         // 2、判断发来消息的数据类型，你也可以定义msgCode或其他数据类型来进行判断，此处我为了偷懒
                         is String -> {
                             tv_log.append("子模块${sender.name}发来了消息，内容=${sendData}\n")
@@ -81,12 +94,12 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    fun bindTabLayout(){
-        if (tabLayout.tabCount != 0){
+    fun bindTabLayout() {
+        if (tabLayout.tabCount != 0) {
             showToast("不能重复添加tab")
             return
         }
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
 
@@ -94,8 +107,8 @@ class MainActivity : BaseActivity() {
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                Log.e("onTabSelected",tab!!.tag.toString())
-                mWindowInfo.jump(tab!!.position,WindowType.FRAGMENTV4)
+                Log.e("onTabSelected", tab!!.tag.toString())
+                mWindowInfo.jump(tab!!.position, WindowType.FRAGMENTV4)
             }
         })
 
@@ -105,19 +118,22 @@ class MainActivity : BaseActivity() {
 //                tabLayout.addTab(tabLayout.newTab().setText(it.name))
 //            }
 //        }
-        mWindowInfo.filterChildByWindowType(WindowType.FRAGMENTV4).forEach { window ->
-            tabLayout.addTab(tabLayout.newTab().setText(window.name).setTag(window))
-        }
+
+        mWindowInfo.filterChildByWindowType(WindowType.FRAGMENTV4).filter { WindowTree.hasAuthority(it.pageAuthority) }
+            .forEach { window ->
+                tabLayout.addTab(tabLayout.newTab().setText(window.name).setTag(window))
+            }
     }
 
-    fun initActivityButton(){
+    fun initActivityButton() {
         llActivity.visibility = View.VISIBLE
-        if (llActivity.childCount == 0){
+        if (llActivity.childCount == 0) {
             // 过滤子Window自动进行布局
-            mWindowInfo.filterChildByWindowType(WindowType.ACTIVITY).forEach {window ->
-                llActivity.addView(Button(this).apply { text = "打开 ${window.name}"
+            mWindowInfo.filterChildByWindowType(WindowType.ACTIVITY).forEach { window ->
+                llActivity.addView(Button(this).apply {
+                    text = "打开 ${window.name}"
                     setOnClickListener { with.jump(window) }  // 注：此处不能使用mWindowInfo获取当前windowInfo对象，因为此处的this指代的是View Button
-                },ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT)
+                }, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             }
         }
     }
@@ -125,7 +141,7 @@ class MainActivity : BaseActivity() {
     /**
      * 更新未读消息显示
      */
-    fun updateUnReadCount(){
+    fun updateUnReadCount() {
         val calcChildUnReadCount = mWindowInfo.calcChildUnReadCount()
         supportActionBar!!.title = if (calcChildUnReadCount != 0) "新消息：$calcChildUnReadCount" else "WindowTree"
         (0 until tabLayout.tabCount).forEach {
@@ -138,7 +154,7 @@ class MainActivity : BaseActivity() {
             (llActivity.getChildAt(it) as Button).apply {
                 text = "打开 ${findChildByIndex.name}"
                 val count = findChildByIndex.calcChildUnReadCount()
-                if (count != 0){
+                if (count != 0) {
                     append("($count)")
                 }
             }
@@ -150,7 +166,7 @@ class MainActivity : BaseActivity() {
         super.onBackPressed()
     }
 
-    fun release(){
+    fun release() {
         supportActionBar!!.title = "WindowTree"
         WindowTree.destroy()
         llActivity.visibility = View.GONE

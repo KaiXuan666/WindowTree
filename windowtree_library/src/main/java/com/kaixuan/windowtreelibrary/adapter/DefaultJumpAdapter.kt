@@ -13,13 +13,13 @@ import java.lang.ref.WeakReference
 
 class DefaultJumpAdapter : IJumpAdapter {
 
-//    val weakHashMapFrag : WeakHashMap<String,Any> by lazy { WeakHashMap<String,Any>() }
-    val weakReferenceMap : HashMap<String,WeakReference<Any>> by lazy { HashMap<String,WeakReference<Any>>() }
+    //    val weakHashMapFrag : WeakHashMap<String,Any> by lazy { WeakHashMap<String,Any>() }
+    val weakReferenceMap: HashMap<String, WeakReference<Any>> by lazy { HashMap<String, WeakReference<Any>>() }
 
-    fun <T> getCache(className : String,create : () -> T) : T{
+    fun <T> getCache(className: String, create: () -> T): T {
 
         val weakReference = weakReferenceMap[className]
-        if (weakReference?.get() == null){
+        if (weakReference?.get() == null) {
             weakReferenceMap[className] = WeakReference(create()) as WeakReference<Any>
         }
         return weakReferenceMap[className]!!.get() as T
@@ -28,21 +28,23 @@ class DefaultJumpAdapter : IJumpAdapter {
     override fun jump(formContext: Context, to: WindowInfo<*>): Boolean {
         val with = WindowTree.with<Any>(formContext)
             ?: throw RuntimeException("找不到与该FormContext对应的WindowInfo; WindowInfo corresponding to FormContext could not be found")
-        when(to.windowType){
+        when (to.windowType) {
             WindowType.ACTIVITY -> {
-                formContext.startActivity(Intent(formContext,to.getClazz()).apply { putExtras(to.bundle) })
+                formContext.startActivity(Intent(formContext, to.getClazz()).apply { putExtras(to.bundle) })
                 return true
             }
             WindowType.FRAGMENT -> {
                 (formContext as Activity).fragmentManager.beginTransaction().replace(with.frameLayoutId,
-                    getCache(to.getClazzName()) {to.getClazz()!!.newInstance()} as android.app.Fragment
+                    getCache(to.getClazzName()) { to.getClazz()!!.newInstance() } as android.app.Fragment
                 ).commit()
                 return true
             }
             WindowType.FRAGMENTV4 -> {
-                (formContext as FragmentActivity).supportFragmentManager.beginTransaction().replace(with.frameLayoutId,
-                    getCache(to.getClazzName()) {to.getClazz()!!.newInstance()} as Fragment
-                ).commit()
+                (formContext as FragmentActivity).supportFragmentManager.run {
+                    beginTransaction().replace(with.frameLayoutId,
+                        getCache(to.getClazzName()) { to.getClazz()!!.newInstance() } as Fragment
+                    ).commit()
+                }
                 return true
             }
             else -> {
@@ -50,6 +52,10 @@ class DefaultJumpAdapter : IJumpAdapter {
             }
         }
         return false
+    }
+
+    fun clear() {
+        weakReferenceMap.clear()
     }
 
 }
