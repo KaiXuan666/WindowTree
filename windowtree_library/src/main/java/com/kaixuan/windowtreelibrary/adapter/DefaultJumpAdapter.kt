@@ -26,7 +26,7 @@ class DefaultJumpAdapter : IJumpAdapter {
     }
 
     override fun jump(formContext: Context, to: WindowInfo<*>): Boolean {
-        val with = WindowTree.instance.with<Any>(formContext)
+        val with = WindowTree.with<Any>(formContext)
             ?: throw RuntimeException("找不到与该FormContext对应的WindowInfo; WindowInfo corresponding to FormContext could not be found")
         when(to.windowType){
             WindowType.ACTIVITY -> {

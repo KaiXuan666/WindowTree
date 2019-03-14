@@ -24,7 +24,7 @@ class MainFragment : Fragment() {
         mView ?: inflater.inflate(R.layout.fragment_test,container,false).apply { mView = this }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        with = WindowTree.instance.with(this)!!
+        with = WindowTree.with(this)!!
         val t = with.setTag("")
         tv_log.movementMethod = ScrollingMovementMethod.getInstance();
         tv_title.text = "我是" + mWindowInfo!!.getClazz()!!.simpleName

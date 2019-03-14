@@ -86,14 +86,18 @@ class WindowTree{
                 instance.windowMeta = null
             }
         }
+
+        @JvmStatic
+        fun <T> with(obj: Any): WindowInfo<T>? {
+            if (!hasInit) {  throw RuntimeException("WindowTree未初始化") }
+            return instance.weakHashMap[obj] as WindowInfo<T>? ?: instance.windowMeta!!.findWindowInfoByClass(obj.javaClass)?.apply { instance.weakHashMap[obj] = this } as WindowInfo<T>?
+        }
     }
 
-    fun <T> with(obj: Any): WindowInfo<T>? {
-        return weakHashMap[obj] as WindowInfo<T>? ?: windowMeta!!.findWindowInfoByClass(obj.javaClass)?.apply { weakHashMap[obj] = this } as WindowInfo<T>?
-    }
 }
 
-fun getWindowInfo(any: Any) :WindowInfo<Any> = WindowTree.instance.with<Any>(any) ?: throw RuntimeException("找不到与${any}对应的WindowInfo，请检查。在匿名内部类调用本方法时应谨慎检查this关键字的指代对象。")
+fun getWindowInfo(any: Any) :WindowInfo<Any> = WindowTree.with<Any>(any)
+    ?: throw RuntimeException("找不到与${any}对应的WindowInfo，请检查。在匿名内部类调用本方法时应谨慎检查this关键字的指代对象。")
 
 val Activity.mWindowInfo: WindowInfo<Any>
     get() = getWindowInfo(this)
