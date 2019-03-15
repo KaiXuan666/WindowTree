@@ -55,7 +55,7 @@ WindowTree.init(MyApp.instance)
 
 3. 
     -  使用kotlin时，可直接在界面类（Activity、Fragment等）中使用扩展属性mWindowInfo拿到当前界面对应的WindowInfo 
-    - 使用java时，使用WindowTree.instance.with(this)获取当前界面对应的WindowInfo
+    - 使用java时，使用WindowTree.with(this)获取当前界面对应的WindowInfo
 
 <br/>
 
